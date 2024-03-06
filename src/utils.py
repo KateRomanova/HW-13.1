@@ -9,8 +9,6 @@ def load_products():
     return products
 
 
-
-
 def count_categories():
     """Считает количество Категорий"""
     all_products = load_products()
