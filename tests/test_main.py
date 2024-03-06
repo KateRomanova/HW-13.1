@@ -31,3 +31,16 @@ def test_init(product_samsung):
     assert product_samsung.description == '256GB, Серый цвет, 200MP камера'
     assert product_samsung.price == 180000.0
     assert product_samsung.quantity == 5
+
+
+class TestCategory():
+    number_of_categories = 7
+    number_of_unique_products = 8
+
+
+cat_1 = TestCategory
+
+
+def test_Category():
+    assert cat_1.number_of_categories == 7
+    assert cat_1.number_of_unique_products ==8
