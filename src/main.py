@@ -54,6 +54,7 @@ class Category:
         """Принимает на вход объект товара и добавляет его в список"""
         if isinstance(item, self.__class__):
             self.__products.append(item)
+        raise TypeError
 
 
 class Product:
@@ -64,11 +65,12 @@ class Product:
     price: float
     quantity: int
 
-    def __init__(self, name, description, price, quantity):
+    def __init__(self, name, description, price, quantity, color):
         self.name = name
         self.description = description
         self.__price = price
         self.quantity = quantity
+        self.color = color
 
     def __repr__(self):
         return f'Product {self.name}, {self.description}, {self.__price}, {self.quantity}'
@@ -77,13 +79,15 @@ class Product:
         return f'{self.name}, {self.price} руб. Остаток: {self.quantity} шт.'
 
     def __add__(self, other):
-        total_amount = self.__price * self.quantity + other.__price * other.quantity
-        return total_amount
+        if isinstance(other, self.__class__):
+            total_amount = self.__price * self.quantity + other.__price * other.quantity
+            return total_amount
+        raise TypeError
 
     @classmethod
-    def add_new_product(cls, name, description, price, quantity):
+    def add_new_product(cls, name, description, price, quantity, color):
         """Создает товар и возвращает объект, который можно добавлять в список товаров"""
-        return cls(name, description, price, quantity)
+        return cls(name, description, price, quantity, color)
 
     @property
     def price(self):
@@ -113,11 +117,40 @@ class Product:
     def add_product(self, list_of_products):
         """Проверяет кол-во товара схожего по имени. В случае, если товар уже существует, складывает кол-во в наличии
         старого товара и нового. При конфликте цен выбирает более высокую цену."""
+
         for prod in list_of_products:
             if prod.name == self.name:
                 prod.quantity += self.quantity
                 if self.price > prod.price:
                     prod.price = self.price
+
+
+class Smartphone(Product):
+
+    def __init__(self, name, description, price, quantity, productivity, model, memory, color):
+        super().__init__(name, description, price, quantity, color)
+        self.productivity = productivity
+        self.model = model
+        self.memory = memory
+
+    # def __add__(self, other):
+    #     if isinstance(other, Smartphone):
+    #         total_amount = self.__price * self.quantity + other.__price * other.quantity
+    #         return total_amount
+    #     raise TypeError
+
+
+class Grass(Product):
+    def __init__(self, name, description, price, quantity, country, terms, color):
+        super().__init__(name, description, price, quantity, color)
+        self.country = country
+        self.terms = terms
+
+    # def __add__(self, other):
+    #     if isinstance(other, Grass):
+    #         total_amount = self.price * self.quantity + other.price * other.quantity
+    #         return total_amount
+    #     raise TypeError
 
 
 class CategoryIter:
@@ -128,6 +161,7 @@ class CategoryIter:
         self.name = name
         self.__products = products
         self.index = -1
+
     def __iter__(self):
         return self
 
@@ -139,31 +173,43 @@ class CategoryIter:
             return self.__products[self.index]
 
 
-category_1 = Category('Пылесосы', 'убираются', [Product('Dyson', 'black',
-                                                        10000, 12), Product('Xiaomi',
-                                                                            'blue', 25000, 10)])
+category_1 = Category('Пылесосы',
+                      'убираются',
+                      [Product('Dyson', 'black', 10000, 12, 'white'),
+                       Product('Xiaomi','blue', 25000, 10, 'black')])
+
 Vacuum_cleaners = CategoryIter(category_1.name, category_1.products)
 for item in Vacuum_cleaners:
     print(item)
 
+gr = Grass("Полынь", "ввв", 10000, 2, "Рос", 2, "зеленая")
+gr1 = Grass("Полынь2", "ввв", 5000, 3, "Рос", 2, "зеленая")
+print(gr.price)
+print('*')
+res = gr + gr
+print(res)
+
+sm = Smartphone('LG', 'ddd', 30000, 5, 'ddd', 'x', '32', 'blue')
+print(type(sm))
+# res = gr + sm
 
 # print(category_1)
-product_1 = Product('Dyson', 'black', 10000, 12)
-# print(str(product_1))
-# product_2 = Product.add_new_product('Xiaomi', 'white', 7000, 2)
-# print(product_2)
+product_1 = Product('Dyson', 'black', 10000, 12, 'green')
+print(str(product_1))
+product_2 = Product.add_new_product('Xiaomi', 'white', 7000, 2, 'purple')
+print(product_2)
 # product_2.price = 5000
 # print(product_2)
 # # product_2.add_product(category_1.products)
 # print(category_1.products)
 # category_1.updated_products = product_2
 # print(category_1.updated_products)
-print(str(category_1))
-print(len(category_1))
+# print(str(category_1))
+# print(len(category_1))
 #
 # print(product_1.price)
 # product_1.price = 0
 # print(product_1.price)
 
-# total = product_1 + product_2
-# print(total)
+total = product_1 + product_2
+print(total)
