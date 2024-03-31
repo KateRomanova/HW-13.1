@@ -22,7 +22,7 @@ def test_init(category_smartphones):
 @pytest.fixture()
 def product_samsung():
     return Product('Samsung Galaxy C23 Ultra', '256GB, Серый цвет, 200MP камера', 180000.0,
-                   5)
+                   5, 'blue')
 
 
 def test_init(product_samsung):
@@ -33,7 +33,7 @@ def test_init(product_samsung):
     assert product_samsung.quantity == 5
 
 
-class TestCategory():
+class TestCategory:
     number_of_categories = 7
     number_of_unique_products = 8
 
@@ -41,6 +41,6 @@ class TestCategory():
 cat_1 = TestCategory
 
 
-def test_Category():
+def test_category():
     assert cat_1.number_of_categories == 7
-    assert cat_1.number_of_unique_products ==8
+    assert cat_1.number_of_unique_products == 8
