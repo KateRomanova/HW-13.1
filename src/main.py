@@ -1,3 +1,6 @@
+# from utils import
+
+
 class Category:
     """Создаем класс и определяем его свойства"""
     number_of_categories = 0
@@ -10,11 +13,9 @@ class Category:
         """Добавляем инициализацию так, чтобы каждый параметр был передан в инициализацию объекта и сохранен.
         Добавляем два атрибута, в которых будут храниться общее количество категорий и общее количество уникальных
         продуктов, не учитывая количество в наличии."""
-        """Делаем список товаров приватным аттрибутом"""
         self.name = name
         self.description = description
-        self.__products = products
-
+        self.products = products
         Category.number_of_categories += 1
         Category.number_of_unique_products += len(self.__products)
 
@@ -56,7 +57,6 @@ class Category:
             self.__products.append(item)
         raise TypeError
 
-
 class Product:
     """Создаем класс и определяем его свойства"""
     number_of_unique_products = 0
@@ -68,8 +68,9 @@ class Product:
     def __init__(self, name, description, price, quantity, color):
         self.name = name
         self.description = description
-        self.__price = price
+        self.price = price
         self.quantity = quantity
+
         self.color = color
 
     def __repr__(self):
