@@ -71,6 +71,10 @@ class Commodity(ABC):
     def __add__(self, other):
         pass
 
+    @abstractmethod
+    def add_product(self, list_of_products):
+        pass
+
 
 class MixinLog:
     def __init__(self, *args, **kwargs):
@@ -90,12 +94,12 @@ class Product(MixinLog, Commodity):
     color: str
 
     def __init__(self, name, description, price, quantity, color):
-        super().__init__()
         self.name = name
         self.description = description
         self.__price = price
         self.quantity = quantity
         self.color = color
+        super().__init__()
 
     # def __repr__(self):
     #     return f'Product {self.name}, {self.description}, {self.__price}, {self.quantity}, {self.color}'
@@ -153,10 +157,10 @@ class Product(MixinLog, Commodity):
 class Smartphone(Product):
 
     def __init__(self, name, description, price, quantity, productivity, model, memory, color):
-        super().__init__(name, description, price, quantity, color)
         self.productivity = productivity
         self.model = model
         self.memory = memory
+        super().__init__(name, description, price, quantity, color)
 
     def __add__(self, other):
         if isinstance(other, Smartphone):
@@ -164,18 +168,28 @@ class Smartphone(Product):
             return total_amount
         raise TypeError
 
+    @classmethod
+    def add_new_product(cls, name, description, price, quantity, productivity, model, memory, color):
+        """Создает товар и возвращает объект, который можно добавлять в список товаров"""
+        return cls(name, description, price, quantity, productivity, model, memory, color)
+
 
 class Grass(Product):
     def __init__(self, name, description, price, quantity, country, terms, color):
-        super().__init__(name, description, price, quantity, color)
         self.country = country
         self.terms = terms
+        super().__init__(name, description, price, quantity, color)
 
     def __add__(self, other):
         if isinstance(other, Grass):
             total_amount = self.price * self.quantity + other.price * other.quantity
             return total_amount
         raise TypeError
+
+    @classmethod
+    def add_new_product(cls, name, description, price, quantity, country, term, color):
+        """Создает товар и возвращает объект, который можно добавлять в список товаров"""
+        return cls(name, description, price, quantity, country, term, color)
 
 
 class CategoryIter:
