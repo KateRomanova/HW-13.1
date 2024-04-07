@@ -28,10 +28,11 @@ class Category:
         return f'{self.name}, количество продуктов: {self.__len__()} шт.'
 
     def __len__(self):
-        result = 0
-        for i in self.__products:
-            result += i.quantity
-        return result
+        """Возвращает общее количество продуктов в категории"""
+        total_quantity = 0
+        for product in self.__products:
+            total_quantity += product.quantity
+        return total_quantity
 
     def get_name(self):
         return self.name
@@ -59,6 +60,21 @@ class Category:
             self.__products.append(item)
         raise TypeError
 
+    def average_price(self):
+        """Подсчитывает средний ценник всех товаров"""
+        try:
+            total_price = 0
+            total_quantity = 0
+            for product in self.__products:
+                total_quantity += product.quantity
+            for product in self.__products:
+                total_price += product.price
+            result = total_price / total_quantity
+        except ZeroDivisionError:
+            print('В категории нет товаров')
+            return 0
+        return result
+
 
 class Commodity(ABC):
     """Создаем абстрактный базовый класс для классов "Продукт", "Смартфоны" и "Трава Газонная"""
@@ -82,6 +98,14 @@ class MixinLog:
 
     def __repr__(self):
         return f'Создан объект {self.__class__.__name__}, {self.__dict__.items()}'
+
+
+class QuantityError(Exception):
+    def __init__(self, value):
+        self.message = value
+
+    def __str__(self):
+        return f'Товар с нулевым количеством не может быть добавлен'
 
 
 class Product(MixinLog, Commodity):
@@ -116,7 +140,10 @@ class Product(MixinLog, Commodity):
     @classmethod
     def add_new_product(cls, name, description, price, quantity, color):
         """Создает товар и возвращает объект, который можно добавлять в список товаров"""
-        return cls(name, description, price, quantity, color)
+        if quantity == 0:
+            raise QuantityError(quantity)
+        else:
+            return cls(name, description, price, quantity, color)
 
     @property
     def price(self):
@@ -171,7 +198,10 @@ class Smartphone(Product):
     @classmethod
     def add_new_product(cls, name, description, price, quantity, productivity, model, memory, color):
         """Создает товар и возвращает объект, который можно добавлять в список товаров"""
-        return cls(name, description, price, quantity, productivity, model, memory, color)
+        if quantity == 0:
+            raise QuantityError(quantity)
+        else:
+            return cls(name, description, price, quantity, productivity, model, memory, color)
 
 
 class Grass(Product):
@@ -189,7 +219,10 @@ class Grass(Product):
     @classmethod
     def add_new_product(cls, name, description, price, quantity, country, term, color):
         """Создает товар и возвращает объект, который можно добавлять в список товаров"""
-        return cls(name, description, price, quantity, country, term, color)
+        if quantity == 0:
+            raise QuantityError(quantity)
+        else:
+            return cls(name, description, price, quantity, country, term, color)
 
 
 class CategoryIter:
@@ -212,32 +245,32 @@ class CategoryIter:
             return self.__products[self.index]
 
 
-# category_1 = Category('Пылесосы',
-#                       'убираются',
-#                       [Product('Dyson', 'black', 10000, 12, 'white'),
-#                        Product('Xiaomi', 'blue', 25000, 10, 'black')])
-
+category_1 = Category('Пылесосы',
+                      'убираются',
+                      [Product('Dyson', 'black', 10000, 0, 'white'),
+                       Product('Xiaomi', 'blue', 25000, 0, 'black')])
+print(category_1.average_price())
 # Vacuum_cleaners = CategoryIter(category_1.name, category_1.products)
 # for item in Vacuum_cleaners:
 #     print(item)
 #
-gr = Grass("Полынь", "ввв", 10000, 2, "Рос", 2, "зеленая")
-print(gr.__repr__())
-# gr1 = Grass("Полынь2", "ввв", 5000, 3, "Рос", 2, "зеленая")
+# gr = Grass("Полынь", "ввв", 10000, 2, "Рос", 2, "зеленая")
+# print(gr.__repr__())
+# # gr1 = Grass("Полынь2", "ввв", 5000, 3, "Рос", 2, "зеленая")
 # print(gr.price)
 # print('*')
 # res = gr + gr
 # print(res)
 #
-sm = Smartphone('LG', 'ddd', 30000, 5, 'ddd', 'x', '32', 'blue')
-print(sm.__repr__())
+# sm = Smartphone('LG', 'ddd', 30000, 5, 'ddd', 'x', '32', 'blue')
+# print(sm.__repr__())
 # print(type(sm))
 # res = gr + sm
 
 # print(category_1)
-product_1 = Product('Dyson', 'black', 10000, 12, 'green')
-print(product_1.__repr__())
-# product_2 = Product.add_new_product('Xiaomi', 'white', 7000, 2, 'purple')
+# product_1 = Product('Dyson', 'black', 10000, 12, 'green')
+# # print(product_1.__repr__())
+# product_2 = Product.add_new_product('Xiaomi', 'white', 7000, 0, 'purple')
 # print(product_2)
 # product_2.price = 5000
 # print(product_2)
